@@ -6,6 +6,7 @@ ModuleInfo "Version: 1.80"
 ModuleInfo "Author:  Oliver Skawronek"
 ModuleInfo "License: GNU Lesser General Public License, Version 3"
 
+Import "utils.bmx"
 Import brl.stream
 Import pub.stdc
 ?Win32
