@@ -1,5 +1,6 @@
 # BNetEx
 An object oriented low level network library for BlitzMax.
+
 **Highlights:**
 * Multiplatform: Windows, Mac OS X, Linux
 * Support UDP and TCP
