@@ -1,0 +1,3 @@
+libiphlpapi.a is part of MinGW, found in the %MinGW/lib% folder.
+Please see http://www.mingw.org/license for licensing information.
+It is not part of the BNetEx license!
