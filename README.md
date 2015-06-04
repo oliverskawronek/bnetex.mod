@@ -23,7 +23,7 @@ An object oriented low level network library for BlitzMax.
 # Example
 A simple HTTP client that receives the HTML file of google.de. You can find more examples in the **example** folder.
 
-```
+```blitzmax
 SuperStrict
 
 Framework brl.blitz
