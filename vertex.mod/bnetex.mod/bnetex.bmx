@@ -370,7 +370,7 @@ Type TNetStream Extends TStream
 	Method Read:Int(buffer:Byte Ptr, size:Int)
 		Local newCapacity : Int
 		
-		If Not recvBuffer Then Return 0
+		If Not recvBuffer Or recvSize = 0 Then Return 0
 		If size > recvSize Then size = recvSize
 		
 		newCapacity = recvCapacity
@@ -406,11 +406,15 @@ Type TNetStream Extends TStream
 			newCapacity :Shl 1
 		Wend
 		If newCapacity <> sendCapacity Then
-			sendBuffer   = MemExtend(sendBuffer, sendCapacity, newCapacity)
+			Local temp:Byte Ptr = MemAlloc(newCapacity)
+			MemCopy temp, sendBuffer+sendPosition, sendSize
+			MemFree(sendBuffer)
+			sendBuffer = temp
 			sendCapacity = newCapacity
 		EndIf
-		
-		MemCopy(sendBuffer + sendPosition + sendSize, buffer, size)
+		sendPosition = 0
+	
+		MemCopy(sendBuffer + sendSize, buffer, size)
 		sendSize :+ size
 		
 		Return size
@@ -616,11 +620,15 @@ Type TUDPStream Extends TNetStream
 			newCapacity :Shl 1
 		Wend
 		If newCapacity <> recvCapacity Then
-			recvBuffer   = MemExtend(recvBuffer, recvCapacity, newCapacity)
+			Local temp:Byte Ptr = MemAlloc(newCapacity)
+			MemCopy(temp, recvBuffer+recvPosition, recvSize)
+			MemFree(recvBuffer)
+			recvBuffer = temp
 			recvCapacity = newCapacity
 		EndIf
+		recvPosition = 0
 		
-		result = recvfrom_(socket, recvBuffer + recvPosition + recvSize, ..
+		result = recvfrom_(socket, recvBuffer + recvSize, ..
 		                   size, 0, ip, port)
 		recvSize :+ result
 			
@@ -897,11 +905,15 @@ Type TTCPStream Extends TNetStream
 			newCapacity :Shl 1
 		Wend
 		If newCapacity <> recvCapacity Then
-			recvBuffer   = MemExtend(recvBuffer, recvCapacity, newCapacity)
+			Local temp:Byte Ptr = MemAlloc(newCapacity)
+			MemCopy(temp, recvBuffer+recvPosition, recvSize)
+			MemFree(recvBuffer)
+			recvBuffer = temp
 			recvCapacity = newCapacity
 		EndIf
+		recvPosition = 0
 		
-		result = recv_(socket, recvBuffer + recvPosition + recvSize, size, 0)
+		result = recv_(socket, recvBuffer + recvSize, size, 0)
 		recvSize :+ result
 			
 		If result = SOCKET_ERROR_ Or result = 0 Then
